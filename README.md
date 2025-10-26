@@ -78,8 +78,8 @@ todo_tracker/
 
 ## Clone the repository
 
-git clone https://github.com/username/todo_tracker.git
-cd todo_tracker
+git clone [https://github.com/username/todo_tracker.git](https://github.com/lavanya-Chakravarthi/flycatch_todo)
+cd flycatch_todo
 
 ## Install dependencies
 
