@@ -44,14 +44,18 @@ optimized for performance, usability, and offline capability.
 The app is structured following **Clean Architecture**, with separation of concerns into three main
 layers:
 
+```text
 todo_tracker/
 ├── lib/
-│ ├── core/ # constants, services, error handling,network info
-│ ├── data/ # Models, repository implementations, local & remote data sources
-│ ├── domain/ # Entities, use cases,repository
-│ ├── presentation/ # Screens, widgets, BLoCs
-│ ├── injections.dart # service locator for DI
-│ └── main.dart # App entry point
+│   ├── core/            # constants, services, error handling, network info
+│   ├── data/            # Models, repository implementations, local & remote data sources
+│   ├── domain/          # Entities, use cases, repository
+│   ├── presentation/    # Screens, widgets, BLoCs
+│   ├── injections.dart  # service locator for DI
+│   └── main.dart        # App entry point
+
+```
+
 
 **Flow:**
 
@@ -74,8 +78,9 @@ todo_tracker/
 
 ## Clone the repository
 
-git clone https://github.com/username/todo_tracker.git
-cd todo_tracker
+git clone https://github.com/lavanya-Chakravarthi/flycatch_todo
+
+cd flycatch_todo
 
 ## Install dependencies
 
