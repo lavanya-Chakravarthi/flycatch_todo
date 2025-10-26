@@ -46,12 +46,13 @@ layers:
 
 todo_tracker/
 ├── lib/
-│ ├── core/ # constants, services, error handling,network info
-│ ├── data/ # Models, repository implementations, local & remote data sources
-│ ├── domain/ # Entities, use cases,repository
-│ ├── presentation/ # Screens, widgets, BLoCs
-│ ├── injections.dart # service locator for DI
-│ └── main.dart # App entry point
+│   ├── core/            # constants, services, error handling, network info
+│   ├── data/            # Models, repository implementations, local & remote data sources
+│   ├── domain/          # Entities, use cases, repository
+│   ├── presentation/    # Screens, widgets, BLoCs
+│   ├── injections.dart  # service locator for DI
+│   └── main.dart        # App entry point
+
 
 **Flow:**
 
