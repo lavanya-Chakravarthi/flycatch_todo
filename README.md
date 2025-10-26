@@ -44,6 +44,7 @@ optimized for performance, usability, and offline capability.
 The app is structured following **Clean Architecture**, with separation of concerns into three main
 layers:
 
+```text
 todo_tracker/
 ├── lib/
 │   ├── core/            # constants, services, error handling, network info
@@ -52,6 +53,8 @@ todo_tracker/
 │   ├── presentation/    # Screens, widgets, BLoCs
 │   ├── injections.dart  # service locator for DI
 │   └── main.dart        # App entry point
+
+```
 
 
 **Flow:**
