@@ -21,11 +21,10 @@ class TodoLocalDataSource {
 
     for (var todo in todos) {
       final existing = existingMap[todo.id];
-
       if (existing == null) {
         final now = DateTime.now();
         final newTodo = todo.copyWith(
-          createdAt: now,
+          createdAt: existing?.createdAt ?? now,
           updatedAt: now,
           isSynced: true,
         );
@@ -72,7 +71,6 @@ class TodoLocalDataSource {
       // Use timestamp-based ID for offline-created todos
       todoData['id'] = DateTime.now().millisecondsSinceEpoch;
     }
-    
     await db.insert('todos', todoData,
         conflictAlgorithm: ConflictAlgorithm.replace);
   }

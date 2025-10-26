@@ -44,14 +44,14 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           ));
         }
         
-        await addTodo(event.todo);
+        final saved = await addTodo(event.todo);
         
         // Update state directly instead of reloading all todos
         if (state is TodoLoaded) {
           final currentState = state as TodoLoaded;
           final updatedTodos = List<Todo>.from(currentState.todos);
           // Add the new todo at the beginning (most recent)
-          updatedTodos.insert(0, event.todo);
+          updatedTodos.insert(0, saved);
           emit(TodoLoaded(todos: updatedTodos));
         } else {
           // Fallback to reload if not in loaded state
@@ -74,14 +74,14 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           ));
         }
         
-        await updateTodo(event.todo);
+        final Todo saved = await updateTodo(event.todo);
         
         // Update state directly instead of reloading all todos
         if (state is TodoLoaded) {
           final currentState = state as TodoLoaded;
           final updatedTodos = currentState.todos.map((todo) {
-            if (todo.id == event.todo.id) {
-              return event.todo;
+            if (todo.id == saved.id) {
+              return saved;
             }
             return todo;
           }).toList();

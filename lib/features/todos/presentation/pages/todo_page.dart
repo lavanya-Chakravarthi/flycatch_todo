@@ -150,68 +150,66 @@ class _TodoPageState extends State<TodoPage> {
 
           await showDialog(
             context: context,
-            builder: (ctx) => SingleChildScrollView(
-              child: AlertDialog(
-                title: const Text('Add Todo'),
-                content: Form(
-                  key: formKey,
-                  child: TextFormField(
-                    controller: titleController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter todo title',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Todo title cannot be empty';
-                      }
-                      return null;
-                    },
-                    autofocus: true,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Add Todo'),
+              content: Form(
+                key: formKey,
+                child: TextFormField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter todo title',
+                    border: OutlineInputBorder(),
                   ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Todo title cannot be empty';
+                    }
+                    return null;
+                  },
+                  autofocus: true,
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        final bloc = context.read<TodoBloc>();
-                        final now = DateTime.now();
-                        if (bloc.state is TodoLoaded &&
-                            (bloc.state as TodoLoaded).todos.isNotEmpty) {
-                          final lastTodo =
-                              (bloc.state as TodoLoaded).todos.last;
-                          final newTodo = lastTodo.copyWith(
-                            id: now.millisecondsSinceEpoch,
-                            title: titleController.text.trim(),
-                            completed: false,
-                            createdAt: now,
-                            updatedAt: now,
-                            isSynced: false,
-                          );
-                          bloc.add(AddTodoEvent(newTodo));
-                        } else {
-                          final newTodo = Todo(
-                            id: now.millisecondsSinceEpoch,
-                            userId: 1,
-                            title: titleController.text.trim(),
-                            completed: false,
-                            createdAt: now,
-                            updatedAt: now,
-                            isSynced: false,
-                          );
-                          bloc.add(AddTodoEvent(newTodo));
-                        }
-                        Navigator.pop(ctx);
-                      }
-                    },
-                    child: const Text('Add'),
-                  ),
-                ],
               ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      final bloc = context.read<TodoBloc>();
+                      final now = DateTime.now();
+                      if (bloc.state is TodoLoaded &&
+                          (bloc.state as TodoLoaded).todos.isNotEmpty) {
+                        final lastTodo =
+                            (bloc.state as TodoLoaded).todos.last;
+                        final newTodo = lastTodo.copyWith(
+                          id: now.millisecondsSinceEpoch,
+                          title: titleController.text.trim(),
+                          completed: false,
+                          createdAt: now,
+                          updatedAt: now,
+                          isSynced: false,
+                        );
+                        bloc.add(AddTodoEvent(newTodo));
+                      } else {
+                        final newTodo = Todo(
+                          id: now.millisecondsSinceEpoch,
+                          userId: 1,
+                          title: titleController.text.trim(),
+                          completed: false,
+                          createdAt: now,
+                          updatedAt: now,
+                          isSynced: false,
+                        );
+                        bloc.add(AddTodoEvent(newTodo));
+                      }
+                      Navigator.pop(ctx);
+                    }
+                  },
+                  child: const Text('Add'),
+                ),
+              ],
             ),
           );
         },

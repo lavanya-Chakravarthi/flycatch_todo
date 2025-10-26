@@ -7,7 +7,7 @@ class AddTodo {
   final TodoRepository repository;
   AddTodo(this.repository);
 
-  Future call(Todo todo) async {
+  Future<Todo> call(Todo todo) async {
     return await repository.addTodo(todo);
   }
 }

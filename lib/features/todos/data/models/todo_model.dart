@@ -19,15 +19,17 @@ class TodoModel extends Todo {
     isSynced: isSynced,
   );
 
-  factory TodoModel.fromJson(Map<String, dynamic> json) => TodoModel(
-    id: json['id'],
-    userId: json['userId'],
-    title: json['title'],
-    completed: json['completed'],
-    createdAt: DateTime.fromMillisecondsSinceEpoch(0),
-    updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
-    isSynced: true,
-  );
+  factory TodoModel.fromJson(Map<String, dynamic> json) {
+    return TodoModel(
+      id: json['id'],
+      userId: json['userId'],
+      title: json['title'],
+      completed: json['completed'],
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      isSynced: true,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -41,11 +43,12 @@ class TodoModel extends Todo {
     userId: dbJson['userId'],
     title: dbJson['title'],
     completed: dbJson['completed'] == 1,
-    createdAt: dbJson['created_at'] != null 
+    createdAt: dbJson['created_at'] != null
         ? DateTime.parse(dbJson['created_at'])
         : DateTime.parse(dbJson['updated_at']), // Fallback to updated_at for existing records
     updatedAt: DateTime.parse(dbJson['updated_at']),
-    isSynced: dbJson['is_synced'] == 1,
+    isSynced: (dbJson['is_synced'] ?? 0) == 1,
+
   );
 
   Map<String, dynamic> toDb() => {
@@ -80,7 +83,6 @@ class TodoModel extends Todo {
 
 
   bool hasChanged(TodoModel other) {
-    return title != other.title ||
-        completed != other.completed;
+    return title != other.title;
   }
 }

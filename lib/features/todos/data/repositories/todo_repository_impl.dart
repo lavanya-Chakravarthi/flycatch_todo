@@ -53,53 +53,44 @@ class TodoRepositoryImpl implements TodoRepository {
 
   /// Add todo offline-first
   @override
-  Future<void> addTodo(Todo todo) async {
+  Future<Todo> addTodo(Todo todo) async {
+    final isOnline = await networkInfo.isConnected;
+
     // Convert Todo to TodoModel
     final todoModel = TodoModel(
       id: todo.id,
       userId: todo.userId,
       title: todo.title,
       completed: todo.completed,
-      createdAt: todo.createdAt,
-      updatedAt: todo.updatedAt,
-      isSynced: todo.isSynced,
+      createdAt: todo.createdAt.isBefore(DateTime(1970)) ? DateTime.now() : todo.createdAt,
+      updatedAt: DateTime.now(),
+      isSynced: isOnline,
     );
     
     try {
-      // Save locally first with isSynced false and updated timestamp
-      final now = DateTime.now();
-      final localTodoModel = todoModel.copyWith(
-        isSynced: false,
-        createdAt: todo.createdAt.isBefore(DateTime(1970)) ? now : todo.createdAt,
-        updatedAt: now,
-      );
-      await localDataSource.addTodo(localTodoModel);
+      await localDataSource.addTodo(todoModel);
     } catch (_) {
       throw CacheFailure('Failed to add todo locally');
     }
 
     // Try to sync immediately if online
-    if (await networkInfo.isConnected) {
+    if (isOnline) {
       try {
-        final remoteTodo = await remoteDataSource.addTodo(todoModel);
-        // Update local todo with remote ID and mark as synced
-        await localDataSource.updateTodo(
-          todoModel.copyWith(
-            id: remoteTodo.id,
-            isSynced: true,
-            updatedAt: remoteTodo.updatedAt,
-          ),
-        );
+        await remoteDataSource.addTodo(todoModel);
+
       } catch (_) {
         // It will throw below error for new added todos because of used fake api
         //throw ServerFailure('Failed to add todo in server');
       }
     }
+    return todoModel;
   }
 
   /// Update todo offline-first
   @override
-  Future<void> updateTodo(Todo todo) async {
+  Future<Todo> updateTodo(Todo todo) async {
+    final isOnline = await networkInfo.isConnected;
+
     // Convert Todo to TodoModel
     final todoModel = TodoModel(
       id: todo.id,
@@ -108,13 +99,13 @@ class TodoRepositoryImpl implements TodoRepository {
       completed: todo.completed,
       createdAt: todo.createdAt,
       updatedAt: todo.updatedAt,
-      isSynced: todo.isSynced,
+      isSynced: isOnline,
     );
     
     try {
       // Update locally first with isSynced false and updated timestamp
       final localTodoModel = todoModel.copyWith(
-        isSynced: false,
+        isSynced: isOnline,
         updatedAt: DateTime.now(),
       );
       await localDataSource.updateTodo(localTodoModel);
@@ -125,19 +116,14 @@ class TodoRepositoryImpl implements TodoRepository {
     // Try to sync immediately if online
     if (await networkInfo.isConnected) {
       try {
+
         await remoteDataSource.updateTodo(todoModel);
-        // Mark as synced locally with updated timestamp
-        await localDataSource.updateTodo(
-          todoModel.copyWith(
-            isSynced: true,
-            updatedAt: DateTime.now(),
-          ),
-        );
       } catch (_) {
         // It will throw below error for new added todos because of used fake api
        // throw ServerFailure('Failed to update todo in server');
       }
     }
+    return todoModel;
   }
 
   /// Delete todo offline-first
@@ -196,10 +182,11 @@ class TodoRepositoryImpl implements TodoRepository {
               ),
             );
           } else {
-            // Updated todo - update remote
-            await remoteDataSource.updateTodo(todoModel);
+
             // Mark as synced locally
             await localDataSource.updateTodo(todoModel.copyWith(isSynced: true));
+            // Updated todo - update remote
+            await remoteDataSource.updateTodo(todoModel);
           }
         } catch (_) {
           await localDataSource.updateTodo(todoModel.copyWith(isSynced: true));
@@ -212,27 +199,10 @@ class TodoRepositoryImpl implements TodoRepository {
 
   /// Merge remote todos with local ones safely
   Future<void> _mergeRemoteTodosWithLocal(
-    List<TodoModel> remoteTodos,
-    List<TodoModel> localTodos,
-  ) async {
-    final localTodosMap = <int, TodoModel>{};
-    for (final todo in localTodos) {
-      localTodosMap[todo.id] = todo;
-    }
-
-    for (final remoteTodo in remoteTodos) {
-      final localTodo = localTodosMap[remoteTodo.id];
-
-      if (localTodo == null) {
-        await localDataSource.addTodo(remoteTodo.copyWith(isSynced: true));
-      } else {
-        if (!localTodo.isSynced) {
-          continue;
-        } else if (remoteTodo.updatedAt.isAfter(localTodo.updatedAt)) {
-          // Update local todo if remote version is newer - in this case not changes as this api is fake one.
-          await localDataSource.updateTodo(remoteTodo.copyWith(isSynced: true));
-        }
-      }
-    }
+      List<TodoModel> remoteTodos,
+      List<TodoModel> localTodos,
+      ) async {
+    // Only call cacheTodos() to handle bulk insert/update
+    await localDataSource.cacheTodos(remoteTodos);
   }
 }
