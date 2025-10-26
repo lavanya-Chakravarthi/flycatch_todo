@@ -201,6 +201,7 @@ class _TodoPageState extends State<TodoPage> {
                           createdAt: now,
                           updatedAt: now,
                           isSynced: false,
+                          isDeleted: false
                         );
                         bloc.add(AddTodoEvent(newTodo));
                       }

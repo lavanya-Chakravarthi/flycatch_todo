@@ -65,6 +65,8 @@ class TodoRepositoryImpl implements TodoRepository {
       createdAt: todo.createdAt.isBefore(DateTime(1970)) ? DateTime.now() : todo.createdAt,
       updatedAt: DateTime.now(),
       isSynced: isOnline,
+      isDeleted: false,
+
     );
     
     try {
@@ -100,6 +102,8 @@ class TodoRepositoryImpl implements TodoRepository {
       createdAt: todo.createdAt,
       updatedAt: todo.updatedAt,
       isSynced: isOnline,
+      isDeleted: false,
+
     );
     
     try {
@@ -138,6 +142,8 @@ class TodoRepositoryImpl implements TodoRepository {
       createdAt: todo.createdAt,
       updatedAt: todo.updatedAt,
       isSynced: todo.isSynced,
+      isDeleted: true,
+
     );
     
     try {

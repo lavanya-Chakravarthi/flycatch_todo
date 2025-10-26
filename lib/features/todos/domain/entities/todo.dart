@@ -9,6 +9,7 @@ class Todo extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isSynced;
+  final bool isDeleted;
 
   const Todo({
     required this.id,
@@ -17,7 +18,7 @@ class Todo extends Equatable {
     required this.completed,
     required this.createdAt,
     required this.updatedAt,
-    required this.isSynced,
+    required this.isSynced, required this.isDeleted,
   });
 
   // Create a copy of this todo with updated fields
@@ -29,6 +30,7 @@ class Todo extends Equatable {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isSynced,
+    bool? isDeleted,
   }) {
     return Todo(
       id: id ?? this.id,
@@ -38,9 +40,10 @@ class Todo extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
   @override
-  List<Object?> get props => [id, userId, title, completed, createdAt, updatedAt, isSynced];
+  List<Object?> get props => [id, userId, title, completed, createdAt, updatedAt, isSynced,isDeleted];
 }

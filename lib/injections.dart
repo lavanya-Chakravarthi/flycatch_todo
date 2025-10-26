@@ -58,7 +58,8 @@ Future<void> init() async {
           completed INTEGER,
           created_at TEXT,
           updated_at TEXT,
-          is_synced INTEGER
+          is_synced INTEGER,
+          is_deleted INTEGER
         )
       ''');
     },

@@ -9,6 +9,7 @@ class TodoModel extends Todo {
     required DateTime createdAt,
     required DateTime updatedAt,
     required bool isSynced,
+    required bool isDeleted,
   }) : super(
     id: id,
     userId: userId,
@@ -17,6 +18,7 @@ class TodoModel extends Todo {
     createdAt: createdAt,
     updatedAt: updatedAt,
     isSynced: isSynced,
+      isDeleted:isDeleted
   );
 
   factory TodoModel.fromJson(Map<String, dynamic> json) {
@@ -27,7 +29,7 @@ class TodoModel extends Todo {
       completed: json['completed'],
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
-      isSynced: true,
+      isSynced: true, isDeleted: false,
     );
   }
 
@@ -47,7 +49,7 @@ class TodoModel extends Todo {
         ? DateTime.parse(dbJson['created_at'])
         : DateTime.parse(dbJson['updated_at']), // Fallback to updated_at for existing records
     updatedAt: DateTime.parse(dbJson['updated_at']),
-    isSynced: (dbJson['is_synced'] ?? 0) == 1,
+    isSynced: (dbJson['is_synced'] ?? 0) == 1, isDeleted: (dbJson['is_deleted'] ?? 0) == 1,
 
   );
 
@@ -59,6 +61,7 @@ class TodoModel extends Todo {
     'created_at': createdAt.toIso8601String(),
     'updated_at': updatedAt.toIso8601String(),
     'is_synced': isSynced ? 1 : 0,
+    'is_deleted': isDeleted ? 1 : 0,
   };
 
   TodoModel copyWith({
@@ -69,6 +72,7 @@ class TodoModel extends Todo {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isSynced,
+    bool? isDeleted,
   }) {
     return TodoModel(
       id: id ?? this.id,
@@ -78,6 +82,7 @@ class TodoModel extends Todo {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
